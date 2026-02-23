@@ -15,7 +15,7 @@
  *
  * Validation:
  *   - Agar songs array nahi hai, return: { count: 0, totalDuration: 0 }
- *   - Agar maxDuration positive number nahi hai, return: { count: 0, totalDuration: 0 }
+ *   - Agar maxDuration positive  number nahi hai, return: { count: 0, totalDuration: 0 }
  *
  * @param {number[]} songs - Array of song durations in seconds
  * @param {number} maxDuration - Maximum total duration allowed in seconds
@@ -35,4 +35,18 @@
  */
 export function buildPlaylist(songs, maxDuration) {
   // Your code here
+  if(!Array.isArray(songs) || typeof maxDuration !== 'number' || maxDuration <= 0) return { count: 0, totalDuration: 0 }
+
+  const validSongs = songs.filter(e => e > 0)
+
+  let count = 0;
+  let totalDuration = 0;
+
+  for(const s of validSongs){
+    if(totalDuration + s > maxDuration) break;
+    count++;
+    totalDuration+= s;
+  }
+
+  return {count, totalDuration}
 }

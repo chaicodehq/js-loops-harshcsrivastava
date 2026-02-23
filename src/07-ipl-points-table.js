@@ -38,4 +38,68 @@
  */
 export function iplPointsTable(matches) {
   // Your code here
+  if (!Array.isArray(matches) || matches.length === 0) return [];
+  // iplPointsTable([
+  //   { team1: "CSK", team2: "MI", result: "win", winner: "CSK" },
+  //   { team1: "RCB", team2: "CSK", result: "tie" },
+  // ]);
+  let pointsTable = [];
+
+  for (const match of matches) {
+    const { team1, team2, result, winner } = match;
+
+    let t1Obj = pointsTable.find((e) => e.team === team1) ?? { team: team1, played: 0, won: 0, lost: 0, tied: 0, noResult: 0, points: 0 };
+    let t2Obj = pointsTable.find((e) => e.team === team2) ?? { team: team2, played: 0, won: 0, lost: 0, tied: 0, noResult: 0, points: 0};
+
+    t1Obj["played"] = (t1Obj["played"] || 0) + 1;
+    t2Obj["played"] = (t2Obj["played"] || 0) + 1;
+
+    switch (result) {
+      case "win":
+        const winTeam = winner === t1Obj.team ? t1Obj : t2Obj;
+        const lostTeam = winner === t1Obj.team ? t2Obj : t1Obj;
+        winTeam.won = (winTeam.won || 0) + 1;
+        winTeam.points = (winTeam.points || 0) + 2;
+
+
+        lostTeam.won = (lostTeam.won || 0);
+        lostTeam.lost = (lostTeam.lost || 0) + 1;
+        lostTeam.points = (lostTeam.points || 0);
+
+        break;
+      case "tie":
+        t1Obj.tied = (t1Obj.tied || 0) + 1;
+
+        t1Obj.points = (t1Obj.points || 0) + 1;
+
+        t2Obj.tied = (t2Obj.tied || 0) + 1;
+
+        t2Obj.points = (t2Obj.points || 0) + 1;
+        break;
+
+      case "no_result":
+        t1Obj.noResult = (t1Obj.noResult || 0) + 1;
+        t1Obj.points = (t1Obj.points || 0) + 1;
+
+        t2Obj.noResult = (t2Obj.noResult || 0) + 1;
+        t2Obj.points = (t2Obj.points || 0) + 1;
+        break;
+      default:
+        break;
+    }
+
+    if (!pointsTable.find((e) => e.team === team1)) {
+      pointsTable.push(t1Obj);
+    }
+    if (!pointsTable.find((e) => e.team === team2)) {
+      pointsTable.push(t2Obj);
+    }
+  }
+
+  pointsTable.sort((a,b) =>{
+    if(b.points !== a.points) return b.points - a.points
+    return a.team.localeCompare(b.team)
+  })
+
+  return pointsTable;
 }
